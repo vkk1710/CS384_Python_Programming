@@ -1,6 +1,6 @@
 import tutorial01 as A1
 
-actual_answers = [9, 12, 80, 5, 125, [2, 6, 18, 54, 162]]
+actual_answers = [9, 12, 80, 5, 125, [2, 6, 18, 54, 162], [2, 3, 4, 5, 6]]
 student_answers = []
 
 test_case_1 = A1.add(4, 5)
@@ -23,12 +23,18 @@ student_answers.append(test_case_5)
 a = 2  # starting number
 r = -0.5  # Common ratio
 n = 5  # N th term to be find
+d = 1
 
 gp = A1.printGP(a, r, n)
 gp = list(gp)
 student_answers.append(gp)
 
+ap = A1.printAP(a, d, n)
+ap = list(ap)
+student_answers.append(ap)
+
 print(gp)
+print(ap)
 print(actual_answers)
 print(student_answers)
 

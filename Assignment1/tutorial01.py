@@ -59,6 +59,7 @@ def printGP(a, r, n):
     gp = []
     if (isinstance(a, str) or isinstance(r, str) or isinstance(n, str)
             or n <= 0 or n % 1 != 0):
+        gp.append(0)
         return gp
     n = int(n)
     for i in range(n):
@@ -70,6 +71,13 @@ def printGP(a, r, n):
 #You cant use the inbuilt python function. Write your own function
 def printAP(a, d, n):
     ap = []
+    if (isinstance(a, str) or isinstance(d, str) or isinstance(n, str)
+            or n <= 0 or n % 1 != 0):
+        ap.append(0)
+        return ap
+    n = int(n)
+    for i in range(n):
+        ap.append(a + i * d)
     return ap
 
 
