@@ -22,15 +22,6 @@ def multiply(num1, num2):
     multiplication = num1 * num2
     return multiplication
 
-
-# Function to divide two numbers 
-def divide(num1, num2): 
-	#DivisionLogic 
-    if (num2==0 or isinstance(num1, str) or isinstance(num2, str)):
-        return 0
-    division = num1/num2
-	return division    
-
 	
 # Function to add power function
 #You cant use the inbuilt python function x ** y . Write your own function
