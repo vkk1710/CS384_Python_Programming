@@ -33,8 +33,13 @@ ap = A1.printAP(a, d, n)
 ap = list(ap)
 student_answers.append(ap)
 
+hp = A1.printHP(1, 1, 10.2)
+hp = list(hp)
+#student_answers.append(hp)
+
 print(gp)
 print(ap)
+print(hp)
 print(actual_answers)
 print(student_answers)
 

@@ -85,4 +85,11 @@ def printAP(a, d, n):
 #You cant use the inbuilt python function. Write your own function
 def printHP(a, d, n):
     hp = []
+    if (isinstance(a, str) or isinstance(d, str) or isinstance(n, str)
+            or n <= 0 or n % 1 != 0):
+        hp.append(0)
+        return hp
+    n = int(n)
+    for i in range(n):
+        hp.append(round(divide(1, a + i * d), 3))
     return hp
