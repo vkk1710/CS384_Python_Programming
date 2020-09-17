@@ -39,7 +39,7 @@ def power(num1, num2):  #num1 ^ num2
     power = num1
     for i in range(1, num2):
         power *= num1
-        return power
+    return power
 
 
 # Python 3 program to print GP.  geometric Progression
