@@ -36,9 +36,20 @@ def divide(num1, num2):
 #You cant use the inbuilt python function x ** y . Write your own function
 def power(num1, num2):  #num1 ^ num2
     #DivisionLogic
-    power = num1
-    for i in range(1, num2):
-        power *= num1
+    if (isinstance(num1, str) or isinstance(num2, str) or num2 % 1 != 0
+            or (num2 < 0 and num1 == 0) or num1 == 0):
+        return 0
+    num2 = int(num2)
+    if (num2 == 0):
+        return 1
+    if (num2 < 0):
+        power = 1
+        for i in range(0, -num2):
+            power /= num1
+    else:
+        power = num1
+        for i in range(1, num2):
+            power *= num1
     return power
 
 
@@ -46,6 +57,12 @@ def power(num1, num2):  #num1 ^ num2
 #You cant use the inbuilt python function. Write your own function
 def printGP(a, r, n):
     gp = []
+    if (isinstance(a, str) or isinstance(r, str) or isinstance(n, str)
+            or n <= 0 or n % 1 != 0):
+        return gp
+    n = int(n)
+    for i in range(n):
+        gp.append(a * power(r, i))
     return gp
 
 
