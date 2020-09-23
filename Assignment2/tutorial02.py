@@ -3,7 +3,9 @@ import tutorial01 as A1
 import math
 # Function to compute mean
 def mean(first_list):
-    # mean Logic 
+    # mean Logic
+    mean_value = summation(first_list)/len(first_list)
+    mean_value = round(mean_value,3)
     return mean_value
 
 
