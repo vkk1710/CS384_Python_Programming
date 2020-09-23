@@ -5,7 +5,7 @@ import math
 def mean(first_list):
     # mean Logic
     mean_value = summation(first_list)/len(first_list)
-    mean_value = round(mean_value,3)
+    mean_value = round(mean_value,6)
     return mean_value
 
 
@@ -21,7 +21,7 @@ def median(first_list):
         median_value = (sort[n//2] + sort[n//2 - 1])/2
     else:
         median_value = sort[n//2]
-    median_value = round(median_value,3)
+    median_value = round(median_value,6)
     return median_value
 
 
@@ -29,7 +29,7 @@ def median(first_list):
 def standard_deviation(first_list):
     # Standard deviation Logic
     standard_deviation_value = math.sqrt(variance(first_list))
-    standard_deviation_value = round(standard_deviation_value,3)
+    standard_deviation_value = round(standard_deviation_value,6)
     return standard_deviation_value
 
 
@@ -43,7 +43,7 @@ def variance(first_list):
             return 0
         s+=A1.power(i-x,2)
     variance_value = s/len(first_list) 
-    variance_value = round(variance_value,3)
+    variance_value = round(variance_value,6)
     return variance_value
 
 
@@ -51,7 +51,7 @@ def variance(first_list):
 def rmse(first_list, second_list):
     # RMSE Logic
     rmse_value = math.sqrt(mse(first_list, second_list))
-    rmse_value = round(rmse_value,3)
+    rmse_value = round(rmse_value,6)
     return rmse_value
 
 
@@ -66,7 +66,7 @@ def mse(first_list, second_list):
             return 0
         mse_value += A1.power(first_list[i]-second_list[i],2)
     mse_value = mse_value/len(first_list)
-    mse_value = round(mse_value,3)
+    mse_value = round(mse_value,6)
     return mse_value
 
 
@@ -81,7 +81,7 @@ def mae(first_list, second_list):
             return 0
         mae_value += abs(first_list[i]-second_list[i])
     mae_value = mae_value/len(first_list)
-    mae_value = round(mae_value,3)
+    mae_value = round(mae_value,6)
     return mae_value
 
 
@@ -98,7 +98,7 @@ def nse(first_list, second_list):
     if(var==0):
         return 0
     nse_value = 1 - (m/var)
-    nse_value = round(nse_value,3)
+    nse_value = round(nse_value,6)
     return nse_value
 
 
@@ -120,7 +120,7 @@ def pcc(first_list, second_list):
             return 0 
        pcc_value += (first_list[i]-x)*(second_list[i]-y) 
     pcc_value = pcc_value/(d1*d2) 
-    pcc_value = round(pcc_value,3)
+    pcc_value = round(pcc_value,6)
     return pcc_value
 
 
@@ -135,7 +135,7 @@ def skewness(first_list):
     for i in first_list:
         skewness_value += A1.power((i-x)/s,3)
     skewness_value = skewness_value/len(first_list)
-    skewness_value = round(skewness_value,3)
+    skewness_value = round(skewness_value,6)
     return skewness_value
     
 def sorting(first_list):
@@ -164,7 +164,7 @@ def kurtosis(first_list):
     for i in first_list:
         kurtosis_value += A1.power((i-x)/s,4)
     kurtosis_value = kurtosis_value/len(first_list)
-    kurtosis_value = round(kurtosis_value,3)
+    kurtosis_value = round(kurtosis_value,6)
     return kurtosis_value
 
 
@@ -176,5 +176,5 @@ def summation(first_list):
         if(isinstance(i,str)):
             return 0
         summation_value+=i
-    summation_value = round(summation_value,3)    
+    summation_value = round(summation_value,6)    
     return summation_value
