@@ -31,6 +31,14 @@ def standard_deviation(first_list):
 # Function to compute variance. You cant use Python functions
 def variance(first_list):
     # variance Logic
+    x = mean(first_list)
+    s=0
+    for i in first_list:
+        if(isinstance(i,str)):
+            return 0
+        s+=A1.power(i-x,2)
+    variance_value = s/len(first_list) 
+    variance_value = round(variance_value,3)
     return variance_value
 
 
