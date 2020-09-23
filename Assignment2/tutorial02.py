@@ -64,6 +64,16 @@ def skewness(first_list):
     
 def sorting(first_list):
     # Sorting Logic
+    sorted_list = first_list[:]
+    for i in range(len(sorted_list)):
+        if(isinstance(sorted_list[i],str)):
+            return []
+        j=i-1
+        while(j>=0 and sorted_list[j]>sorted_list[j+1]):
+            c = sorted_list[j]
+            sorted_list[j] = sorted_list[j+1]
+            sorted_list[j+1] = c
+            j-=1          
     return sorted_list
 
 
