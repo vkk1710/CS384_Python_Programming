@@ -142,6 +142,15 @@ def sorting(first_list):
 # Function to compute Kurtosis. You cant use Python functions
 def kurtosis(first_list):
     # Kurtosis Logic
+    x = mean(first_list)
+    s = standard_deviation(first_list)
+    if(s==0):
+        return 0
+    kurtosis_value = 0
+    for i in first_list:
+        kurtosis_value += A1.power((i-x)/s,4)
+    kurtosis_value = kurtosis_value/len(first_list)
+    kurtosis_value = round(kurtosis_value,3)
     return kurtosis_value
 
 
