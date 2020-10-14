@@ -43,8 +43,20 @@ def course():
                        
 def country():
     # Read csv and process
-    pass
-
+    with open('studentinfo_cs384.csv','r') as file :
+        dict_reader = csv.DictReader(file)
+        field = ['id','full_name','country','email','gender','dob','blood_group','state']
+        for row in dict_reader:
+            country = row['country'].lower()
+            if(not(os.path.exists(os.path.join(r'analytics\country',country+'.csv')))):
+                with open(os.path.join(r'analytics\country',country+'.csv'),'a',newline='') as f :
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writeheader()
+                    writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+            else:
+                with open(os.path.join(r'analytics\country',country+'.csv'),'a',newline='') as f:
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']}) 
 
 def email_domain_extract():
     # Read csv and process
@@ -75,4 +87,4 @@ def blood_group():
 def new_file_sort():
     # Read csv and process
     pass
-course()
+country()
