@@ -124,5 +124,18 @@ def blood_group():
 # Create the new file here and also sort it in this function only.
 def new_file_sort():
     # Read csv and process
-    pass
-blood_group()
+    with open('studentinfo_cs384.csv','r') as file :
+        dict_reader = csv.DictReader(file)
+        field = ['id','first_name','last_name','country','email','gender','dob','blood_group','state']
+        for row in dict_reader:
+            if(not(os.path.exists(os.path.join(r'analytics','studentinfo_cs384_names_split.csv')))):
+                with open(os.path.join(r'analytics','studentinfo_cs384_names_split.csv'),'a',newline='') as f :
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writeheader()
+                    writer.writerow({'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+            else:
+                 with open(os.path.join(r'analytics','studentinfo_cs384_names_split.csv'),'a',newline='') as f :
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writerow({'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+    
+new_file_sort()
