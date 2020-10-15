@@ -1,7 +1,7 @@
 import csv
 import os
 import re
-
+import shutil
 
 def course():
     # Read csv and process
@@ -124,6 +124,9 @@ def blood_group():
 # Create the new file here and also sort it in this function only.
 def new_file_sort():
     # Read csv and process
+    os.remove('analytics\studentinfo_cs384_names_split.csv')
+    os.remove('analytics\studentinfo_cs384_names_split_sorted_first_name.csv')
+    dict_list=[]
     with open('studentinfo_cs384.csv','r') as file :
         dict_reader = csv.DictReader(file)
         field = ['id','first_name','last_name','country','email','gender','dob','blood_group','state']
@@ -132,10 +135,25 @@ def new_file_sort():
                 with open(os.path.join(r'analytics','studentinfo_cs384_names_split.csv'),'a',newline='') as f :
                     writer = csv.DictWriter(f, fieldnames = field)
                     writer.writeheader()
-                    writer.writerow({'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+                    new_dict = {'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']}
+                    dict_list.append(new_dict)
+                    writer.writerow(new_dict)    
             else:
                  with open(os.path.join(r'analytics','studentinfo_cs384_names_split.csv'),'a',newline='') as f :
                     writer = csv.DictWriter(f, fieldnames = field)
-                    writer.writerow({'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+                    new_dict = {'id':row['id'],'first_name':row['full_name'].split(' ')[0],'last_name':' '.join(row['full_name'].split(' ')[1:]),'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']}
+                    dict_list.append(new_dict)
+                    writer.writerow(new_dict)
     
+    dict_list.sort(key = lambda t : t['first_name'])
+    with open(os.path.join(r'analytics','studentinfo_cs384_names_split_sorted_first_name.csv'),'a',newline='') as f :
+        writer = csv.DictWriter(f, fieldnames = field)
+        writer.writeheader()
+        row = dict_list[0]
+        writer.writerow({'id':row['id'],'first_name':row['first_name'],'last_name':row['last_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+    for row in dict_list[1:]:
+        with open(os.path.join(r'analytics','studentinfo_cs384_names_split_sorted_first_name.csv'),'a',newline='') as f :
+            writer = csv.DictWriter(f, fieldnames = field)
+            writer.writerow({'id':row['id'],'first_name':row['first_name'],'last_name':row['last_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+        
 new_file_sort()
