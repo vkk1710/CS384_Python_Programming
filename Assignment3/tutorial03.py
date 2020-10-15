@@ -136,8 +136,41 @@ def gender():
 
 def dob():
     # Read csv and process
-    pass            
-
+    try:
+        shutil.rmtree(r'.\analytics\dob')
+    except:
+        pass
+    try:
+        os.mkdir(r'.\analytics\dob')
+    except:
+        pass
+    with open(r'.\studentinfo_cs384.csv','r') as file :
+        dict_reader = csv.DictReader(file)
+        field = ['id','full_name','country','email','gender','dob','blood_group','state']
+        for row in dict_reader:
+            date = row['dob']
+            day = date.split('-')[0]
+            month = date.split('-')[1]
+            year = int(date.split('-')[2])
+            initial = 1995
+            for i in range(5):
+                if(i!=4):
+                    final = initial+4
+                else:
+                    final = initial+5
+                if(year<=final and year>=initial):
+                     if(not(os.path.exists(os.path.join(r'.\analytics\dob','bday_'+str(initial)+'_'+str(final)+'.csv')))):
+                         with open(os.path.join(r'.\analytics\dob','bday_'+str(initial)+'_'+str(final)+'.csv'),'a',newline='') as f :
+                             writer = csv.DictWriter(f, fieldnames = field)
+                             writer.writeheader()
+                             writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+                     else:
+                         with open(os.path.join(r'.\analytics\dob','bday_'+str(initial)+'_'+str(final)+'.csv'),'a',newline='') as f :
+                             writer = csv.DictWriter(f, fieldnames = field)
+                             writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})
+                     break
+                initial += 5
+                
 def state():
     # Read csv and process
     try:
@@ -230,4 +263,3 @@ def new_file_sort():
         with open(os.path.join(r'.\analytics','studentinfo_cs384_names_split_sorted_first_name.csv'),'a',newline='') as f :
             writer = csv.DictWriter(f, fieldnames = field)
             writer.writerow({'id':row['id'],'first_name':row['first_name'],'last_name':row['last_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
-
