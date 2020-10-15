@@ -81,10 +81,33 @@ def country():
                     writer = csv.DictWriter(f, fieldnames = field)
                     writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']}) 
 
+
 def email_domain_extract():
     # Read csv and process
-    pass
-
+    try:
+        shutil.rmtree(r'.\analytics\email_domain')
+    except:
+        pass
+    try:
+        os.mkdir(r'.\analytics\email_domain')
+    except:
+        pass
+    with open(r'.\studentinfo_cs384.csv','r') as file :
+        dict_reader = csv.DictReader(file)
+        field = ['id','full_name','country','email','gender','dob','blood_group','state']
+        for row in dict_reader:
+            email = row['email'].lower()
+            email_domain=re.search(r'@(.+)[.]',email).group(0)
+            email_domain=email_domain.split('.')[0][1:]
+            if(not(os.path.exists(os.path.join(r'.\analytics\email_domain',email_domain+'.csv')))):
+                with open(os.path.join(r'.\analytics\email_domain',email_domain+'.csv'),'a',newline='') as f :
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writeheader()
+                    writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
+            else:
+                with open(os.path.join(r'.\analytics\email_domain',email_domain+'.csv'),'a',newline='') as f :
+                    writer = csv.DictWriter(f, fieldnames = field)
+                    writer.writerow({'id':row['id'],'full_name':row['full_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})
 
 def gender():
     # Read csv and process
@@ -113,8 +136,7 @@ def gender():
 
 def dob():
     # Read csv and process
-    pass
-
+    pass            
 
 def state():
     # Read csv and process
@@ -208,4 +230,4 @@ def new_file_sort():
         with open(os.path.join(r'.\analytics','studentinfo_cs384_names_split_sorted_first_name.csv'),'a',newline='') as f :
             writer = csv.DictWriter(f, fieldnames = field)
             writer.writerow({'id':row['id'],'first_name':row['first_name'],'last_name':row['last_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
-        
+
