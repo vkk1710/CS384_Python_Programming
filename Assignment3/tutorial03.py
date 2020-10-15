@@ -69,8 +69,8 @@ def email_domain_extract():
 
 def gender():
     # Read csv and process
-    shutil.rmtree('analytics\country')
-    os.mkdir('analytics\country')
+    shutil.rmtree('analytics\gender')
+    os.mkdir('analytics\gender')
     with open('studentinfo_cs384.csv','r') as file :
         dict_reader = csv.DictReader(file)
         field = ['id','full_name','country','email','gender','dob','blood_group','state']
@@ -93,6 +93,8 @@ def dob():
 
 def state():
     # Read csv and process
+    shutil.rmtree('analytics\state')
+    os.mkdir('analytics\state')
     with open('studentinfo_cs384.csv','r') as file :
         dict_reader = csv.DictReader(file)
         field = ['id','full_name','country','email','gender','dob','blood_group','state']
@@ -162,4 +164,4 @@ def new_file_sort():
             writer = csv.DictWriter(f, fieldnames = field)
             writer.writerow({'id':row['id'],'first_name':row['first_name'],'last_name':row['last_name'],'country':row['country'],'email':row['email'],'gender':row['gender'],'dob':row['dob'],'blood_group':row['blood_group'],'state':row['state']})    
         
-country()
+gender()
