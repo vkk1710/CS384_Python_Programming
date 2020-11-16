@@ -148,20 +148,71 @@ def rename_Suits(folder_name):
         if(os.path.exists('Subtitles/'+folder_name+'/'+new_name+extension)):
             os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+'_copy'+extension)
         else:
-            os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+extension)                
+            os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+extension)                    
 
-        print('*'*50)
-        print(old_name)
-        print(new_name+extension)
-    
-    
 
 def rename_How_I_Met_Your_Mother(folder_name):
-    # rename Logic
-    pass
+    print('Enter Season number padding : ')
+    season_pad = int(input())
+    print('Enter Episode number padding : ')
+    episode_pad = int(input())
+    
+    old_title=[]
+    new_title=[]
+    extension_list=[]
+    repeat_dict = {}
+    for f in os.scandir('Subtitles/'+folder_name):
+        if(f.is_file()):
+            split = re.split(r'\s[-]\s',f.name)[1]
+            split = re.split(r'x',split)
+            season_num = split[0]
+            episode_num = split[1]
+            episode_name = re.split(r'\.720p|\.1080p|\.en|\.HDTV|\.480p',f.name)[0]
+            episode_name = re.split(r'- ',episode_name)[-1].strip()
+            extension = f.name[-4:]
+            extension_list.append(extension)
+            
+            if(season_pad>len(season_num)):
+                for i in range(season_pad-len(season_num)):
+                    season_num = '0' + season_num
+            if(len(episode_num.split('-'))==1):
+                episode_num = str(int(episode_num))
+                if(episode_pad>len(episode_num)):
+                    for i in range(episode_pad-len(episode_num)):
+                        episode_num = '0' + episode_num 
+            else:
+                p1 = str(int(episode_num.split('-')[0]))
+                p2 = str(int(episode_num.split('-')[1]))
+                if(episode_pad>len(p1)):
+                    for i in range(episode_pad-len(p1)):
+                        p1 = '0' + p1
+                if(episode_pad>len(p2)):
+                    for i in range(episode_pad-len(p2)):
+                        p2 = '0' + p2
+                episode_num = p1+'-'+p2
+                
+            new_name = folder_name + ' - ' + 'Season ' + season_num + ' Episode ' + episode_num + ' - ' + episode_name
+            old_title.append(f.name)
+            new_title.append(new_name)
+            
+            if(new_name+extension in repeat_dict):
+                repeat_dict[new_name+extension] += 1
+            else:
+                repeat_dict[new_name+extension] = 1
+      
+    for i in zip(old_title,new_title,extension_list):
+        new_name = i[1]
+        old_name = i[0]
+        extension = i[2]
+        if(os.path.exists('Subtitles/'+folder_name+'/'+new_name+extension)):
+            os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+'('+str(repeat_dict[new_name+extension]-1)+')'+extension)
+            repeat_dict[new_name+extension] -= 1
+        else:
+            os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+extension)                    
+    
 
 print('Enter the Main Title of the Web Series : ')
-series_name = input().lower()
+series_name = input().lower().strip()
 if(series_name == 'FIR'.lower()):
     rename_FIR('FIR')
 elif(series_name == 'Game of Thrones'.lower()):
