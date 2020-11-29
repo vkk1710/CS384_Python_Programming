@@ -33,7 +33,18 @@ def branch_files(filename):
 
 def stats_grouping(matrix,groups_list):
     # function to generate the stats_grouping.csv
-    pass
+    totals_list = []
+    group_dist_list = []
+    for i in matrix:
+        if(i=='left'):
+            continue
+        totals_list.append(sum(list(matrix[i].values())))
+        group_dist_list.append(matrix[i])
+    df1 = pd.DataFrame({'group':groups_list,'total':totals_list})
+    df2 = pd.DataFrame(group_dist_list)
+    df_final = pd.concat([df1,df2],axis=1)
+    df_final.set_index('group',inplace=True)
+    df_final.to_csv('stats_grouping.csv')
     
     
 def group_allocation(filename, number_of_groups):
@@ -102,6 +113,9 @@ def group_allocation(filename, number_of_groups):
             grp_df.set_index('Roll',inplace=True) 
             grp_df.to_csv('Group_G'+str(i)+'.csv')
             groups_list.append('Group_G'+str(i))
+    
+    # calling function to generate stats_grouping.csv file.........
+    stats_grouping(matrix,groups_list)
             
     
 filename = "Btech_2020_master_data.csv"
