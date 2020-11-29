@@ -20,7 +20,16 @@ def branch_strength(filename):
 
 def branch_files(filename):
     # function to generate branch wise csv files
-    pass
+    df = pd.read_csv(filename)
+    df['branch'] = df['Roll'].apply(lambda x:x[4:6])
+    df['roll_num'] = df['Roll'].apply(lambda x:int(x[6:]))
+    branches = list(df['branch'].value_counts().index)
+    for branch in branches:
+        br_df = df.loc[df['branch']==branch]
+        br_df.sort_values(by='roll_num')
+        br_df = br_df[['Roll','Name','Email']]
+        br_df.set_index('Roll',inplace=True)
+        br_df.to_csv(branch+'.csv')
 
 def stats_grouping(matrix,groups_list):
     # function to generate the stats_grouping.csv
@@ -33,6 +42,9 @@ def group_allocation(filename, number_of_groups):
     
     # calling function to generate branch_strength.csv file........
     branch_strength(filename)
+    
+    # calling function to generate branch wise csv files........
+    branch_files(filename)
           
             
     
