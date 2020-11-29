@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-# save this .py file along with Btech_2020_master_data.csv in the current working directory.
+# save this .py file along with Btech_2020_master_data.csv in the current working directory..
 
 def branch_strength(filename):
     # function that generates the branch_strength.csv
