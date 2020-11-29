@@ -45,7 +45,29 @@ def group_allocation(filename, number_of_groups):
     
     # calling function to generate branch wise csv files........
     branch_files(filename)
-          
+    
+    # code for generating the matrix........
+    df = pd.read_csv('branch strength.csv')
+    branch = list(df['BRANCH_CODE'])
+    strength = list(df['STRENGTH'])
+    matrix={}
+    for i in range(number_of_groups):
+        d = {}
+        for br,st in zip(branch,strength):
+            d[br] = st//number_of_groups
+        matrix[i+1] = d
+    d={}
+    for br,st in zip(branch,strength):
+        d[br] = st%number_of_groups
+    matrix['left'] = d
+    left_dict = matrix['left']
+    count = 0
+    for i in left_dict :
+        rem = left_dict[i]
+        for n in range(rem):
+            matrix[(count%number_of_groups)+1][i] += 1
+            count += 1
+            left_dict[i] -= 1     
             
     
 filename = "Btech_2020_master_data.csv"
