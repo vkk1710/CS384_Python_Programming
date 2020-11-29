@@ -68,6 +68,40 @@ def group_allocation(filename, number_of_groups):
             matrix[(count%number_of_groups)+1][i] += 1
             count += 1
             left_dict[i] -= 1     
+    
+    # code for generating the group wise csv files........
+    cnt_dict = {}
+    columns = pd.read_csv(filename).columns
+    groups_list=[]
+    for i in matrix:
+        if(i=='left'):
+            continue
+        d = matrix[i]
+        grp_df = pd.DataFrame(columns = columns)
+        grp_df.set_index(columns[0])
+        for br in d:
+            num = d[br]
+            if br in cnt_dict.keys():
+                cnt_dict[br] += num
+            else:
+                cnt_dict[br] = num
+            count = cnt_dict[br]
+            batch_df = pd.read_csv(br+'.csv')[count-num:count]
+            grp_df = pd.concat([grp_df,batch_df])
+            
+        grp_df['branch'] = grp_df['Roll'].apply(lambda x:x[4:6])
+        grp_df['roll_num'] = grp_df['Roll'].apply(lambda x:int(x[6:]))
+        grp_df = grp_df.sort_values(by=['branch', 'roll_num'])
+        grp_df.drop(columns = ['branch','roll_num'],inplace=True)
+        
+        if(i<10):
+            grp_df.set_index('Roll',inplace=True) 
+            grp_df.to_csv('Group_G0'+str(i)+'.csv')
+            groups_list.append('Group_G0'+str(i))
+        else:
+            grp_df.set_index('Roll',inplace=True) 
+            grp_df.to_csv('Group_G'+str(i)+'.csv')
+            groups_list.append('Group_G'+str(i))
             
     
 filename = "Btech_2020_master_data.csv"
