@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+os.chdir('F:/Acads/5th sem/Python CS384/CS384_1801CE31/End_Sem_Code')
 # save this .py file along with Btech_2020_master_data.csv in the current working directory..
 
 def branch_strength(filename):
@@ -108,11 +109,11 @@ def group_allocation(filename, number_of_groups):
         if(i<10):
             grp_df.set_index('Roll',inplace=True) 
             grp_df.to_csv('Group_G0'+str(i)+'.csv')
-            groups_list.append('Group_G0'+str(i))
+            groups_list.append('Group_G0'+str(i)+'.csv')
         else:
             grp_df.set_index('Roll',inplace=True) 
             grp_df.to_csv('Group_G'+str(i)+'.csv')
-            groups_list.append('Group_G'+str(i))
+            groups_list.append('Group_G'+str(i)+'.csv')
     
     # calling function to generate stats_grouping.csv file.........
     stats_grouping(matrix,groups_list)
