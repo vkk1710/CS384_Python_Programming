@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 
-os.chdir('F:/Acads/5th sem/Python CS384/CS384_1801CE31/End_Sem_Code')
 # save this .py file along with Btech_2020_master_data.csv in the current working directory..
 
 def branch_strength(filename):
@@ -120,5 +119,5 @@ def group_allocation(filename, number_of_groups):
             
     
 filename = "Btech_2020_master_data.csv"
-number_of_groups = 12 
+number_of_groups = 12
 group_allocation(filename, number_of_groups)
