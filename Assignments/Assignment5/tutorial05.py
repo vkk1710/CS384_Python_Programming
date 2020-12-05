@@ -209,10 +209,33 @@ def rename_How_I_Met_Your_Mother(folder_name):
             repeat_dict[new_name+extension] -= 1
         else:
             os.rename('Subtitles/'+folder_name+'/'+old_name, 'Subtitles/'+folder_name+'/'+new_name+extension)                    
-    
 
-print('Enter the Main Title of the Web Series : ')
-series_name = input().lower().strip()
+
+########### Calling the series renaming functions according to the user input...........
+
+########### Please set the current working directory to this assignment 5 directory before running the code
+
+series_list = os.listdir('Subtitles')
+
+print('Menu of Series :\n')
+
+series_dict = {}
+for i,name in enumerate(series_list):
+    print(f'{i+1}. {name}')  
+    series_dict[i+1] = name
+print('\n')
+
+
+print('Please choose an option from the menu above : ')
+
+series_num =  int(input())
+while(series_num not in [1,2,3,4,5]):
+    print('Please choose a valid option!!')
+    print('Please choose an option from the menu above : ')
+    series_num =  int(input())
+
+series_name = series_dict[series_num].lower()
+
 if(series_name == 'FIR'.lower()):
     rename_FIR('FIR')
 elif(series_name == 'Game of Thrones'.lower()):
@@ -223,5 +246,3 @@ elif(series_name == 'Sherlock'.lower()):
     rename_Sherlock('Sherlock')
 elif(series_name == 'Suits'.lower()):
     rename_Suits('Suits')
-else:
-    print('Entered series name is not present in the current database!!')
