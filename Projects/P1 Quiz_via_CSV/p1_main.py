@@ -1,117 +1,97 @@
-import pandas as pd
+import tkinter
 import os
+from tkinter import *
 
 os.chdir('F:/Acads/5th sem/Python CS384/CS384_1801CE31/Projects/P1 Quiz_via_CSV')
 
-class quiz:
-    def __init__(self,roll):
-        print('Which quiz do you want to attend?')
-        self.quiz = input()
-        self.quiz_df = pd.read_csv(f'quiz_wise_questions//q{self.quiz}.csv')
-        self.time = self.quiz_df.columns[-1]
-        print(self.time)
-        self.quiz_df.drop(columns = self.time)
-        self.roll = roll
-        #print(self.quiz_df)
-        print('*'*80)
-        
-        
-    def get_data(self):
-        self.l = {}
-        question = self.quiz_df['question']
-        choices = self.quiz_df[['option1','option2','option3','option4']]
-        correct_opt = self.quiz_df['correct_option']
-        marks_correct = self.quiz_df['marks_correct_ans']
-        marks_wrong = self.quiz_df['marks_wrong_ans']
-        compulsion = self.quiz_df['compulsory']
-        ind = list(self.quiz_df.index)
-        for i in ind:
-            d = {}
-            d['question'] = question[i]
-            d['choices'] = list(choices.iloc[i])
-            d['correct_option'] = correct_opt[i]
-            d['marks_correct_ans'] = marks_correct[i]
-            d['marks_wrong_ans'] = marks_wrong[i]
-            d['compulsion'] = compulsion[i]
-            self.l[i+1] = d
-            
-    def main(self):
-        self.ques_dict = self.l
-        print(self.ques_dict)
-        print('*'*80)
-        self.num_ques = len(self.ques_dict)
-        self.ques_attempted = []
-        self.obtained_marks = 0
-        self.total_marks = 0
-        self.num_correct_ans = 0
-        self.num_wrong_ans = 0
-        self.num_unattempted = 0
-        self.user_response_list = []
-        for i in self.ques_dict:
-            print('\tQuestion '+str(i)+') ',self.ques_dict[i]['question'])
-            choices_list = self.ques_dict[i]['choices']
-            for n in range(len(choices_list)):
-                print(f'Option {n+1}) ',choices_list[n])
-            print('\n')
-            correct_marks = self.ques_dict[i]['marks_correct_ans']
-            negative_marks = self.ques_dict[i]['marks_wrong_ans']
-            compulsion = self.ques_dict[i]['compulsion']
-            print(f'\tCredits if Correct Option: {correct_marks}')
-            print(f'Negative Marking: {negative_marks}')
-            print(f'Is compulsory: {compulsion}\n')
-            if(compulsion == 'n'):
-                print('\tEnter Choice: 1, 2, 3, 4, S : S is to skip question')
-                ans_entered = input()
-                while(ans_entered not in ['1','2','3','4','S']):
-                    print('wrong choice made.....Please enter again:')
-                    ans_entered = input()
-                if(ans_entered != 'S'):
-                    self.ques_attempted.append(i)
-                    if(int(ans_entered) == self.ques_dict[i]['correct_option']):
-                        self.num_correct_ans += 1
-                        self.obtained_marks += self.ques_dict[i]['marks_correct_ans']
-                    else:
-                        self.num_wrong_ans += 1
-                        self.obtained_marks += self.ques_dict[i]['marks_wrong_ans']
-                else:
-                   self.num_unattempted += 1 
-            else:
-                print('\tEnter Choice: 1, 2, 3, 4 :')
-                ans_entered = input()
-                while(ans_entered not in ['1','2','3','4']):
-                    print('wrong choice made.....Please enter again:')
-                    ans_entered = input()
-                if(int(ans_entered) == self.ques_dict[i]['correct_option']):
-                    self.num_correct_ans += 1
-                    self.obtained_marks += self.ques_dict[i]['marks_correct_ans']
-                else:
-                    self.num_wrong_ans += 1
-                    self.obtained_marks += self.ques_dict[i]['marks_wrong_ans']
-                self.ques_attempted.append(i)
-            self.user_response_list.append(ans_entered)
-            self.total_marks += self.ques_dict[i]['marks_correct_ans']
-            print('\n')
-            print('choice made : ',ans_entered)
-            print('*'*80)
-        
-        print(f'Total Quiz Questions: {self.num_ques}')
-        print(f'Total Quiz Questions Attempted: {len(self.ques_attempted)}')
-        print(f'Total Correct Question: {self.num_correct_ans}')
-        print(f'Total Wrong Questions: {self.num_wrong_ans}')
-        print(f'Total Marks: {self.obtained_marks/self.total_marks}')
-        
-        self.quiz_df['marked_choice'] = self.user_response_list
-        self.quiz_df['Total'] = [self.num_correct_ans,self.num_wrong_ans,self.num_unattempted]
-        self.quiz_df['Legend'] = ['Correct Choices','Wrong Choices','Unattempted']
-        
-        self.quiz_df.set_index('ques_no',inplace=True)
-        # uploads the question wise response of student in csv file like q1_1701ME01.csv
-        self.quiz_df.to_csv('individual_responses/'+f'q{self.quiz}_{self.roll}.csv')
-        
-# quiz_df = in the format of q1_1701ME01.csv ie this can be directly       
-q = quiz('1801CE31')
-q.get_data()
-q.main()
-print(q.quiz_df)
+import datamanager
+import hashlib
+import time
+import queue
+import threading
+from tkinter import messagebox
+import pandas as pd
+import sqlite3
 
+class login:
+    def __init__(self):
+        self.root = tkinter.Tk()
+        self.root.title('Quiz Login Screen')
+        self.root.geometry('500x350')
+        self.user_ds = datamanager.database()
+        ##### Variables for Register
+        self.reg_roll = StringVar()
+        self.reg_password = StringVar()
+        self.reg_name = StringVar()
+        self.reg_wapp_number = StringVar()
+        ###### Variables for login
+        self.log_roll = StringVar()
+        self.log_password = StringVar()
+        self.homepage()
+        self.root.mainloop()
         
+    def homepage(self):
+        self.header = Label(self.root,text="CS384 : Quiz Project",font=('',35))
+        self.header.pack()
+        self.header = Label(self.root,text="Quiz Login",font=('',25),padx=5,pady=5)
+        self.header.pack()
+        login_frame = Frame(self.root,padx=30,pady=30)
+        Label(login_frame,text = 'Roll No: ',font = ('',20),pady=15,padx=45).grid(sticky = W)
+        Entry(login_frame,textvariable = self.log_roll,bd = 5,font = ('',15)).grid(row=0,column=1)
+        Label(login_frame,text = 'Password: ',font = ('',20),pady=5,padx=5).grid(sticky = W)
+        Entry(login_frame,textvariable = self.log_password,bd = 5,font = ('',15),show = '*').grid(row=1,column=1)
+        Button(login_frame,text = ' Login ',bd = 7 ,font = ('',15),padx=5,pady=5,command = self.login).grid()
+        Button(login_frame,text = ' Register ',bd = 7 ,font = ('',15),padx=5,pady=5,command = self.register_screen).grid(row=2,column=1)
+        self.login_frame= login_frame
+        self.login_frame.pack()
+        
+    def register_screen(self):
+        reg_frame = Frame(self.root)
+        reg_frame = Frame(self.root,padx =5,pady = 5)
+        Label(reg_frame,text = 'Name : ',font = ('',18),pady=5,padx=5).grid(sticky = W)
+        Entry(reg_frame,textvariable = self.reg_name,bd = 5,font = ('',15)).grid(row=0,column=1)
+        Label(reg_frame,text = 'Password : ',font = ('',18),pady=5,padx=5).grid(sticky = W)
+        Entry(reg_frame,textvariable = self.reg_password,bd = 5,font = ('',15)).grid(row=1,column=1)
+        Label(reg_frame,text = 'Roll No : ',font = ('',18),pady=5,padx=5).grid(sticky = W)
+        Entry(reg_frame,textvariable = self.reg_roll,bd = 5,font = ('',15)).grid(row=2,column=1)
+        Label(reg_frame,text = 'Whatsapp_No : ',font = ('',18),pady=5,padx=5).grid(sticky = W)
+        Entry(reg_frame,textvariable = self.reg_wapp_number,bd = 5,font = ('',15)).grid(row=3,column=1)
+        Button(reg_frame,text = 'Register',bd = 7 ,font = ('',15),padx=5,pady=5,command=self.registration).grid()
+        Button(reg_frame,text = 'Back',bd = 7 ,font = ('',15),padx=5,pady=5,command=self.login_screen).grid(row=4,column=1)
+        self.reg_frame = reg_frame
+        
+        self.reg_roll.set('')
+        self.reg_password.set('')
+        self.reg_name.set('')
+        self.reg_wapp_number.set('')
+        self.login_frame.pack_forget()
+        self.header['text'] = 'Registration'
+        self.reg_frame.pack()
+    
+    def login_screen(self):
+        self.log_roll.set('')
+        self.log_password.set('')
+        self.reg_frame.pack_forget()
+        self.header["text"] = "Quiz Login"
+        self.login_frame.pack()
+        
+    def registration(self):
+        res = self.user_ds.register(self.reg_roll.get(),self.reg_password.get(),self.reg_name.get(),self.reg_wapp_number.get())
+        if res :
+            messagebox.showinfo("Success","successfully registered")
+        else:
+            messagebox.showerror("Error","{} already exists".format(self.reg_roll.get()))
+
+    def login(self):
+        res  = self.user_ds.check_cred(self.log_roll.get(),self.log_password.get())
+        if res.get("success") == False:
+            messagebox.showerror("Error",res.get("msg"))
+        else:
+            self.root.destroy()
+            user_credentials = self.user_ds.get_user(self.log_roll.get())['data']
+            user_roll = user_credentials[0]
+            user_name = user_credentials[2]
+            main_screen(user_roll,user_name)
+
+
+l = login()
