@@ -86,23 +86,26 @@ class Notepad:
                                         command=self.__quitApplication)
         self.__thisMenuBar.add_cascade(label="File",
                                        menu=self.__thisFileMenu)
-        
+
         # To give a feature of cut
         self.__thisEditMenu.add_command(label="Cut",
                                         command=self.__cut)
-        
+
         # to give a feature of copy
         self.__thisEditMenu.add_command(label="Copy",
                                         command=self.__copy)
-        
+
+        # To give a feature of paste
+        self.__thisEditMenu.add_command(label="Paste",
+                                        command=self.__paste)
+
         # To give a feature of editing
         self.__thisMenuBar.add_cascade(label="Edit",
                                        menu=self.__thisEditMenu)
-        
+
         # To create a feature of description of the notepad
         self.__thisHelpMenu.add_command(label="About Notepad",
                                         command=self.__showAbout)
-        
         self.__thisMenuBar.add_cascade(label="Help",
                                        menu=self.__thisHelpMenu)
 
@@ -119,10 +122,10 @@ class Notepad:
     def __quitApplication(self):
         self.__root.destroy()
         # exit()
-        
+
     def __showAbout(self):
         showinfo("Notepad", "Version 7.9.1")
-        
+
     def __openFile(self):
 
         self.__file = askopenfilename(defaultextension=".txt",
@@ -176,12 +179,15 @@ class Notepad:
             file = open(self.__file, "w")
             file.write(self.__thisTextArea.get(1.0, END))
             file.close()
-            
+
     def __cut(self):
         self.__thisTextArea.event_generate("<<Cut>>")
-        
+
     def __copy(self):
         self.__thisTextArea.event_generate("<<Copy>>")
+
+    def __paste(self):
+        self.__thisTextArea.event_generate("<<Paste>>")
 
     def run(self):
 
