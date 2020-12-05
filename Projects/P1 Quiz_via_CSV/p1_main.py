@@ -320,6 +320,50 @@ class main_screen:
         self.wrong_marks_label["text"] = f'Negative Marking: {q["marks_wrong_ans"]}'
         self.is_com["text"] = f'Is compulsory: {q["compulsion"]}'
     
+    ######## Function to get the List of Unattempted questions............
+
+    def __get_unattem(self):
+        temp_screen = Tk()
+        temp_screen.config(background="#ffffff")
+        temp_screen.geometry("300x100")
+        temp_screen.title("Unattempted Questions")
+        for q in self.response:
+            if self.response[q]==-1:
+                Label(temp_screen,text=f"Q{q}",background="#ffffff").pack()
+        Button(temp_screen,text="OK",background="#ffffff",command=lambda :  [temp_screen.destroy()]).pack()
+
+    ######## Go to Question function............
+
+    def __go_to(self):
+        root = Tk()
+        root.title("Go To Question No.")
+        f = Frame(root,background="#ffffff")
+        f.pack()
+        go_to_var = StringVar(f)
+        go_to_var.set("")
+        Label(f,text = 'Go To',background="#ffffff").grid(row=0,column=0)
+        Entry(f,textvariable = go_to_var,bd = 5).grid(row=0,column=1)
+        def goto():
+            new_f = Frame(root,background="#ffffff")
+            new_f.pack()
+            if go_to_var.get() != "":
+                in_q = int(go_to_var.get())
+                go_to_var.set("")
+                if in_q in [i for i in self.response.keys()]:
+                    q = self.quiz_details.get("questions")[in_q]
+                    Label(f,text = f"Q{in_q}) {q['question']}",background="#ffffff").grid(sticky = W)
+                    selected = IntVar(f)
+                    selected.set(-1)
+                    for i in range(4):
+                        Radiobutton(f, text=q["choices"][i],background="#ffffff", variable=selected, value=i+1).grid(sticky = W)
+                def rand():
+                    self.response[in_q]=selected.get()
+                    if in_q == self.q_num :
+                        self.opt_selected.set(selected.get())
+                Button(f,text="Save",background="#ffffff",command = rand).grid(sticky = W)
+
+        Button(f,text="Go To",background="#ffffff",command = goto).grid(row=1,column=0)
+        Button(f,text="Close",background="#ffffff",command = lambda :[root.destroy()]).grid(row=1,column=1)
 
 
 l = login()
