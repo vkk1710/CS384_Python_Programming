@@ -130,6 +130,89 @@ class main_screen:
             self.timer_lb.after(1000,self.timer)
             self.max_time-=1
             
+    def start_quiz(self,quiz):
+        root = Tk()
+        root.config(background = "#ffffff")
+        root.geometry('700x600')
+        self.user_scores_db = users_marks_database()
+
+        ######## Shortcut trigger functions............
+
+        def goto_event(event):
+            self.__go_to()
+        root.bind("<Control_L><Alt_L><G>",goto_event)
+        
+        def unatt_event(event):
+            self.__get_unattem()
+        root.bind("<Control_L><Alt_L><U>",unatt_event)
+        
+        def submit_event(event):
+            self.submit()
+        root.bind("<Control_L><Alt_L><F>",submit_event)
+        
+        self.filename = quiz
+        self.quiz_details = datamanager.get_quiz(self.filename)
+        info_frame = Frame(root,background = "#ffffff")
+        info_frame.pack(side = TOP)
+        self.channel = queue.Queue()
+        self.max_time = self.quiz_details["time"]
+        
+        Label(info_frame, text = "Time Remaining (min : sec) : ",font = ('',17, 'bold'),background = "#ffffff", pady=20,padx=20).grid(row = 0, sticky = W)
+        self.timer_lb = Label(info_frame,text="",font = ('',17),background = "#ffffff",)
+        self.timer_lb.grid(row = 0, column = 1)
+        thread = threading.Thread(target=self.timer)
+        thread.start()
+        Label(info_frame, text = "Name : ",background = "#ffffff",font=(None, 15, 'bold'),pady=10,padx=20).grid(row = 1, sticky = W)
+        Label(info_frame, text = self.name,background = "#ffffff",font=(None, 15)).grid(row = 1, column = 1)
+        Label(info_frame, text = "Roll : ",background = "#ffffff",font=(None, 15, 'bold'),pady=10,padx=20).grid(row = 2, sticky = W)
+        Label(info_frame, text = self.roll,background = "#ffffff",font=(None, 15)).grid(row = 2, column = 1)
+
+        ######## Buttons for Unattempted questions, Go To Question, Export database into Quiz CSVs............
+
+        Button(info_frame, text = "Unattempted Questions List",bd = 3,background = "#ffffff",font=(None, 10,'bold'),command=self.__get_unattem).grid(row = 3, sticky = W)
+        Button(info_frame, text = "Goto Question Number",bd = 3,background = "#ffffff",font=(None, 10,'bold'),command=self.__go_to).grid(row = 3, column = 1)
+        Button(info_frame, text = "Export into CSV",bd = 3,background = "#ffffff",font=(None, 10,'bold'),justify=LEFT,command = self.user_scores_db.export_to_csv).grid(row = 4, sticky = W)
+   
+        def export_event(event):
+            self.user_scores_db.export_to_csv()
+            
+        root.bind("<Control_L><Alt_L><E>",export_event)
+        
+        self.info_frame = info_frame
+        ques_num =  self.quiz_details["questions"].keys()
+        self.response = {key:value for key,value in zip(ques_num,[-1]*len(self.quiz_details["questions"]))}
+        
+        self.ques_frame = Frame(root,background="#ffffff",padx=40,pady=40)
+        self.ques_frame.pack()
+        self.q_num = 1
+        self.ques,self.opts = self.questionset(self.q_num)
+        self.display_q(self.q_num)
+        self.next_but = Button(self.ques_frame,bd = 3, text = "Save & Next",font=(None, 10,'bold'),background="#ffffff",command=self.next_ques)
+        self.next_but.pack(pady = 10, padx = 5, side = LEFT)
+        self.submit_but = Button(self.ques_frame,bd = 3, text = "Submit",font=(None, 10,'bold'),background="#ffffff",command = self.submit)
+        self.submit_but.pack(pady = 10, padx = 5)
+        self.quiz_screen = root
+        root.mainloop()
+        
+    ######## Function to get the next question............
+
+    def next_ques(self):
+        if self.q_num >= len(self.quiz_details["questions"]):
+            messagebox.showwarning("Warning", "If completed the quiz, Press Submit to proceed")
+        else:
+            self.response[self.q_num] = self.opt_selected.get()
+            self.q_num += 1
+            self.opt_selected.set(self.response[self.q_num])
+
+            self.display_q(self.q_num)
+
+    ######## Function to submit the quiz............
+
+    def submit(self):
+        self.response[self.q_num]=self.opt_selected.get()
+        self.end_quiz()
+
+            
 
 
 l = login()
