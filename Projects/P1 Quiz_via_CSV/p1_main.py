@@ -92,7 +92,6 @@ class login:
             user_roll = user_credentials[0]
             user_name = user_credentials[2]
             main_screen(user_roll,user_name)
-            
 
 class main_screen:
     def __init__(self,roll,name):
@@ -365,6 +364,8 @@ class main_screen:
         Button(f,text="Go To",background="#ffffff",command = goto).grid(row=1,column=0)
         Button(f,text="Close",background="#ffffff",command = lambda :[root.destroy()]).grid(row=1,column=1)
 
+######## Class to handle the user marks database............
+
 class users_marks_database:
     def __init__(self):
         self.connect = sqlite3.connect("project1_quiz_cs384")
@@ -395,5 +396,28 @@ class users_marks_database:
 
         self.connect.commit()
         
+    ######## Function to export the information in Table 2 of the database to quiz CSVs............
+
+    def export_to_csv(self):
+        quiz_list = self.connect.execute('SELECT quiz_num FROM project1_marks').fetchall()
+        quiz_list = set([i[0] for i in quiz_list])
+        for quiz in quiz_list:
+            roll_list  = []
+            quiz_num_list = []
+            marks_list = []
+            q_num = quiz[1] 
+            output_file = f"quiz{q_num}.csv"
+            quiz_users = self.connect.execute("SELECT * FROM project1_marks WHERE quiz_num=:quiz_num",{"quiz_num":quiz}).fetchall()
+            
+            for d in quiz_users:
+                roll_list.append(d[0])
+                quiz_num_list.append(d[1])
+                marks_list.append(d[2])
+            
+            data = {'Roll No':roll_list,'Quiz No':quiz_num_list,'Total Marks':marks_list}
+            df = pd.DataFrame(data)
+            df.set_index('Roll No',inplace = True)
+            df.to_csv(output_file)
+        print("csv files exported!!")
 
 l = login()
