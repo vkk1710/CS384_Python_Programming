@@ -63,3 +63,26 @@ class Notepad:
         # To make the textarea auto resizable
         self.__root.grid_rowconfigure(0, weight=1)
         self.__root.grid_columnconfigure(0, weight=1)
+
+        # Add controls (widget)
+
+        self.__thisTextArea.grid(sticky=N + E + S + W)
+
+        # To open new file
+        self.__thisFileMenu.add_command(label="New",
+                                        command=self.__newFile)
+
+        # To open a already existing file
+        self.__thisFileMenu.add_command(label="Open",
+                                        command=self.__openFile)
+
+        # To save current file
+        self.__thisFileMenu.add_command(label="Save",
+                                        command=self.__saveFile)
+
+        # To create a line in the dialog
+        self.__thisFileMenu.add_separator()
+        self.__thisFileMenu.add_command(label="Exit",
+                                        command=self.__quitApplication)
+        self.__thisMenuBar.add_cascade(label="File",
+                                       menu=self.__thisFileMenu)
