@@ -91,6 +91,10 @@ class Notepad:
         self.__thisEditMenu.add_command(label="Cut",
                                         command=self.__cut)
         
+        # to give a feature of copy
+        self.__thisEditMenu.add_command(label="Copy",
+                                        command=self.__copy)
+        
         # To give a feature of editing
         self.__thisMenuBar.add_cascade(label="Edit",
                                        menu=self.__thisEditMenu)
@@ -175,6 +179,9 @@ class Notepad:
             
     def __cut(self):
         self.__thisTextArea.event_generate("<<Cut>>")
+        
+    def __copy(self):
+        self.__thisTextArea.event_generate("<<Copy>>")
 
     def run(self):
 
