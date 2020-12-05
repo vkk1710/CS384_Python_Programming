@@ -86,6 +86,12 @@ class Notepad:
                                         command=self.__quitApplication)
         self.__thisMenuBar.add_cascade(label="File",
                                        menu=self.__thisFileMenu)
+        
+        # To create a feature of description of the notepad
+        self.__thisHelpMenu.add_command(label="About Notepad",
+                                        command=self.__showAbout)
+        self.__thisMenuBar.add_cascade(label="Help",
+                                       menu=self.__thisHelpMenu)
 
         self.__root.config(menu=self.__thisMenuBar)
 
@@ -100,6 +106,9 @@ class Notepad:
     def __quitApplication(self):
         self.__root.destroy()
         # exit()
+        
+    def __showAbout(self):
+        showinfo("Notepad", "Version 7.9.1")
         
     def __openFile(self):
 
