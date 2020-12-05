@@ -212,7 +212,114 @@ class main_screen:
         self.response[self.q_num]=self.opt_selected.get()
         self.end_quiz()
 
+    ######## End quiz function............
+
+    def end_quiz(self):
+        self.num_correct_ans = 0
+        self.obtained_marks = 0
+        self.num_wrong_ans = 0
+        self.num_unattempted = 0
+        self.total_marks = 0
+
+        quiz_df = pd.read_csv(f'quiz_wise_questions/{self.filename}')
+        self.user_response_list = ['S' if i is -1 else i for i in self.response.values()]
+
+        quiz_df.drop(columns = quiz_df.columns[-1],inplace = True)
+        quiz_df['marked_choice'] = self.user_response_list
+        
+        questions = self.quiz_details['questions']
+        self.num_ques = len(questions)
+        for i in questions.keys():
+            ques_dict = questions[i]
+            resp = self.user_response_list[i-1]
+            if(ques_dict['compulsion'] == 'n'):
+                if(resp != 'S'):
+                    if(resp == ques_dict['correct_option']):
+                        self.num_correct_ans += 1
+                        self.obtained_marks += ques_dict['marks_correct_ans']
+                    else:
+                        self.num_wrong_ans += 1
+                        self.obtained_marks += ques_dict['marks_wrong_ans']
+                else:
+                    self.num_unattempted += 1
+            else:
+                if(resp == ques_dict['correct_option']):
+                    self.num_correct_ans += 1
+                    self.obtained_marks += ques_dict['marks_correct_ans']
+                else:
+                    self.num_wrong_ans += 1
+                    self.obtained_marks += ques_dict['marks_wrong_ans']
+            self.total_marks += ques_dict['marks_correct_ans']
+
+        ######## Updating marks into the database.............
             
+        self.user_scores_db.update_scores(self.roll, self.filename, self.obtained_marks)
+
+        ######## Creating the quiz_roll.csv file..............
+
+        data = {'Total' : [self.num_correct_ans,self.num_wrong_ans,self.num_unattempted,self.obtained_marks,self.total_marks],
+                'Legend' : ['Correct Choices','Wrong Choices','Unattempted','Marks Obtained','Total Quiz Marks']}
+                
+        df1 = pd.DataFrame(data)
+        final_df = pd.concat([quiz_df,df1],axis=1)
+        final_df.set_index('ques_no',inplace = True)
+        q = self.filename[:-4]
+        final_df.to_csv(f'individual_responses/{q}_{self.roll}.csv')
+        
+        
+        ######## Destroying the question and info frames.............
+
+        self.ques_frame.destroy()
+        self.info_frame.destroy()
+
+        ######## Display of Result on the quiz screen............
+
+        messagebox.showwarning("Success", "Quiz Submitted!!")
+        Label(self.quiz_screen, text = "RESULTS",font=(None, 25, 'bold'),background="#ffffff",justify=LEFT,pady=40).grid(row = 1,column=1,sticky = W)
+        Label(self.quiz_screen, text = "Total Quiz Questions : ",font=(None, 15, 'bold'),background="#ffffff",pady=20).grid(row = 3, sticky = W)
+        Label(self.quiz_screen, text = self.num_ques,font=(None, 18, 'bold'),background="#ffffff",pady=20).grid(row = 3, column = 1)
+        Label(self.quiz_screen, text = "Total Quiz Questions Attempted : ",font=(None, 15, 'bold'),background="#ffffff",pady=20).grid(row = 4, sticky = W)
+        Label(self.quiz_screen, text = self.num_ques - self.num_unattempted,font=(None, 18, 'bold'),background="#ffffff",pady=20).grid(row = 4, column = 1)
+        Label(self.quiz_screen, text = "Total Correct Questions : ",font=(None, 15, 'bold'),background="#ffffff",pady=20).grid(row = 5, sticky = W)
+        Label(self.quiz_screen, text = self.num_correct_ans,font=(None, 18, 'bold'),background="#ffffff",pady=20).grid(row = 5, column = 1)
+        Label(self.quiz_screen, text = "Total Wrong Questions : ",font=(None, 15, 'bold'),background="#ffffff",pady=20).grid(row = 6, sticky = W)
+        Label(self.quiz_screen, text = self.num_wrong_ans,font=(None, 18, 'bold'),background="#ffffff",pady=20).grid(row = 6, column = 1)
+        Label(self.quiz_screen, text = "Total Marks Obtained : ",font=(None, 15, 'bold'),background="#ffffff",pady=20).grid(row = 7, sticky = W)
+        Label(self.quiz_screen, text = str(self.obtained_marks)+'/'+str(self.total_marks),font=(None, 18, 'bold'),background="#ffffff",pady=20).grid(row = 7, column = 1)
+
+    def questionset(self,ques_num):
+        b = []
+        q = self.quiz_details['questions'][ques_num]['question']
+        comp = self.quiz_details['questions'][ques_num]['compulsion']
+        qLabel = Label(self.ques_frame, text=q, font=(None, 14, 'bold'),background="#ffffff",justify=LEFT)
+        qLabel.pack()
+        self.opt_selected = IntVar()
+        self.opt_selected.set(-1)
+        for i in range(4):
+            btn = Radiobutton(self.ques_frame, text="",font=(None, 13, 'bold'),background="#ffffff", variable=self.opt_selected, value = i+1)
+            b.append(btn)
+            btn.pack()
+
+        self.correct_marks_label = Label(self.ques_frame,text="",font=(None, 13, 'bold'),background="#ffffff")
+        self.wrong_marks_label = Label(self.ques_frame,text="",font=(None, 13, 'bold'),background="#ffffff")
+        self.is_com = Label(self.ques_frame,text="",font=(None, 13, 'bold'),background="#ffffff")
+        self.correct_marks_label.pack()
+        self.wrong_marks_label.pack()
+        self.is_com.pack()
+        return (qLabel,b)
+
+    ######## Function to display questions............
+
+    def display_q(self, ques_num):
+        q = self.quiz_details.get("questions")[ques_num]
+        self.ques['text'] = "Q"+str(ques_num) + ") " + q["question"]
+        for i,opt in enumerate(q['choices']):
+            self.opts[i]['text'] = opt
+
+        self.correct_marks_label["text"] = f'Credits if Correct Option: {q["marks_correct_ans"]}'
+        self.wrong_marks_label["text"] = f'Negative Marking: {q["marks_wrong_ans"]}'
+        self.is_com["text"] = f'Is compulsory: {q["compulsion"]}'
+    
 
 
 l = login()
