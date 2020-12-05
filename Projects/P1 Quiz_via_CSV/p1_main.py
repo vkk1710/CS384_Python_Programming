@@ -92,6 +92,44 @@ class login:
             user_roll = user_credentials[0]
             user_name = user_credentials[2]
             main_screen(user_roll,user_name)
+            
+
+class main_screen:
+    def __init__(self,roll,name):
+        self.roll = roll
+        self.name = name
+        self.root = Tk()
+        self.root.config(background = "#ffffff")
+        self.root.geometry('500x500')
+        self.choose_quiz()
+        self.root.mainloop()
+    
+    ######## Function to choose which quiz to attempt............
+
+    def choose_quiz(self):
+        Label(self.root,text="Which quiz do you want to attend?",background = "#ffffff",font=("Goudy Old Style", 20, "bold"),pady=30,padx=20).pack()
+        quiz = StringVar()
+        print(quiz.get())
+        for i in os.listdir("./quiz_wise_questions"):
+            if i[-4:] == '.csv':
+                Radiobutton(self.root,text=i[:-4],background = "#ffffff",variable=quiz,value=i,anchor="e",font=(None, 16), justify=LEFT,height=2, width=2).pack()
+        Button(self.root,text="OK",background = "#ffffff",font=(None, 16),bd = 3,command = lambda : [self.root.destroy(),self.start_quiz(quiz.get())]).pack()
+    
+    ######## Timer function............
+
+    def timer(self):
+            #min,sec  = divmod(self.max_time,60)
+            min = int(self.max_time // 60)
+            sec = int(self.max_time % 60)
+            self.timer_lb["text"] = f'{min}:{sec}'
+            if int(self.max_time) == 0:
+                self.channel.put("Stop")
+                print("time out.........Quiz Over!")
+                self.end_quiz()
+                return
+            self.timer_lb.after(1000,self.timer)
+            self.max_time-=1
+            
 
 
 l = login()
