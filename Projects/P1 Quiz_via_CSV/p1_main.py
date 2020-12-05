@@ -1,9 +1,6 @@
 import tkinter
 import os
 from tkinter import *
-
-os.chdir('F:/Acads/5th sem/Python CS384/CS384_1801CE31/Projects/P1 Quiz_via_CSV')
-
 import datamanager
 import hashlib
 import time
