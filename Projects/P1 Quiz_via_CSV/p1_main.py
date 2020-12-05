@@ -365,5 +365,35 @@ class main_screen:
         Button(f,text="Go To",background="#ffffff",command = goto).grid(row=1,column=0)
         Button(f,text="Close",background="#ffffff",command = lambda :[root.destroy()]).grid(row=1,column=1)
 
+class users_marks_database:
+    def __init__(self):
+        self.connect = sqlite3.connect("project1_quiz_cs384")
+        self.connect.execute('''CREATE TABLE IF NOT EXISTS project1_marks(
+                roll VARCHAR(10),
+                quiz_num VARCHAR(45),
+                total_marks INT
+        )''')
+        self.connect.commit()
+    
+    ######## Function to update the scores............
+
+    def update_scores(self,roll,quiz,marks):
+        data_exists = self.connect.execute("SELECT * FROM project1_marks WHERE roll=:roll and quiz_num=:quiz_num",{"roll":roll,"quiz_num":quiz}).fetchone()
+        
+        
+        if(data_exists != None):
+            self.connect.execute('''UPDATE project1_marks SET total_marks=:total_marks WHERE roll=:roll and quiz_num=:quiz_num''',{"total_marks":float(marks),"roll":roll,"quiz_num":quiz})
+            
+        else:
+            self.connect.execute('''INSERT INTO project1_marks(roll,quiz_num,total_marks) VALUES(?,?,?)''',
+                    [
+                        (roll),
+                        (quiz),
+                        (float(marks))
+                    ])
+            
+
+        self.connect.commit()
+        
 
 l = login()
